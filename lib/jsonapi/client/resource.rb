@@ -40,7 +40,7 @@ module JSONAPI
                       :connection,
                       :connection_class,
                       :connection_options,
-                      :request_class,
+                      # :request_class,
                       :request_sender_class,
                       :serializer_class,
                       :route_format,
@@ -52,7 +52,7 @@ module JSONAPI
       self.primary_key = :id
       self.connection_class = JSONAPI::Client::Connection
       self.connection_options = {}
-      self.request_class = JSONAPI::Client::Request
+      # self.request_class = JSONAPI::Client::Request
       self.request_sender_class = JSONAPI::Client::RequestSender
       self.serializer_class = JSONAPI::Client::Serializer
       self.readonly_attributes = [:id, :type, :links, :meta, :relationships]
@@ -78,13 +78,13 @@ module JSONAPI
             end
         end
 
-        def request
-          request_class.new(self)
-        end
+        # def request
+        #   request_class.new(self)
+        # end
 
-        def request_sender
-          request_sender_class.new(self)
-        end
+        # def request_sender
+        #   request_sender_class.new(self)
+        # end
 
         def serializer
           serializer_class.new(self)
@@ -132,6 +132,14 @@ module JSONAPI
 
         def includes(*args)
           new_relation.tap { |r| r.includes!(*args) }
+        end
+
+        def limit(value)
+          new_relation.tap { |r| r.limit!(value) }
+        end
+
+        def offset(value)
+          new_relation.tap { |r| r.offset!(value) }
         end
 
         def order(*args)

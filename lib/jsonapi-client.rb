@@ -6,7 +6,7 @@ require "jsonapi/client/configuration"
 require "jsonapi/client/version"
 
 # TODO: or autolaod?
-# require "jsonapi/client/operations_processor"
+require "jsonapi/client/operation"
 require "jsonapi/client/operation_result"
 require "jsonapi/client/operation_results"
 
@@ -16,7 +16,7 @@ module JSONAPI
   module Client
     autoload(:Connection, "jsonapi/client/connection")
     autoload(:Middleware, "jsonapi/client/middleware")
-    autoload(:Request, "jsonapi/client/request")
+    # autoload(:Request, "jsonapi/client/request")
     # autoload(:Response, "jsonapi/client/response")
     autoload(:Resource, "jsonapi/client/resource")
     autoload(:Serializer, "jsonapi/client/serializer")

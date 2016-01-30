@@ -93,6 +93,8 @@ module JSONAPI
       def all
         operations = [
           JSONAPI::Client::IndexOperation.new(klass, {
+            limit: limit_value,
+            offset: offset_value,
             order: order_values,
             select: select_values,
             where: where_values

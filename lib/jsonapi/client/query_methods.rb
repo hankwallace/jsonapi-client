@@ -24,6 +24,10 @@ module JSONAPI
         def #{name}_value                   # def offset_value
           @values[:#{name}]                 #   @values[:offset]
         end                                 # end
+
+        def #{name}_value=(value)           # def offset_value=(value)
+          @values[:#{name}] = value         #   @values[:offset] = value
+        end                                 # end
         CODE
       end
 
@@ -53,17 +57,20 @@ module JSONAPI
       end
 
       def includes!(*args) # :nodoc:
+        check_if_method_has_arguments!(:includes, args)
         args.reject!(&:blank?)
         args.flatten!
         self.includes_values += args
+        self
       end
 
       def limit(value)
         spawn.limit!(value)
       end
 
-      def limit(value) # :nodoc:
+      def limit!(value) # :nodoc:
         self.limit_value = value
+        self
       end
 
       def offset(value)
@@ -72,6 +79,7 @@ module JSONAPI
 
       def offset!(value)
         self.offset_value = value
+        self
       end
 
       def order(*args)
@@ -79,6 +87,7 @@ module JSONAPI
       end
 
       def order!(*args) # :nodoc:
+        check_if_method_has_arguments!(:order, args)
         validate_order_args(args)
         self.order_values += args
         self
@@ -123,7 +132,6 @@ module JSONAPI
           end
         end
       end
-
     end
   end
 end

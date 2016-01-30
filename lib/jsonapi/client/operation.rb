@@ -51,15 +51,7 @@ module JSONAPI
           merge(sort_param)
       end
 
-      def filter_param
-        where_values.present? ? { filter: filter_value } : {}
-      end
-
-      def filter_value
-        where_values.reduce({}, &:merge).flat_map do |k, v|
-          { k => v.is_a?(Array) ? v.join(",") : v.to_s }
-        end.inject({}, &:merge)
-      end
+      private
 
       def fields_param
         select_values.present? ? { fields: { resource_class.table_name => fields_value } } : {}
@@ -77,6 +69,16 @@ module JSONAPI
             value.to_s.split(",").map(&:strip)
           end
         end.flatten
+      end
+
+      def filter_param
+        where_values.present? ? { filter: filter_value } : {}
+      end
+
+      def filter_value
+        where_values.reduce({}, &:merge).flat_map do |k, v|
+          { k => v.is_a?(Array) ? v.join(",") : v.to_s }
+        end.inject({}, &:merge)
       end
 
       def sort_param
@@ -106,12 +108,17 @@ module JSONAPI
     end
 
     class IndexOperation < QueryOperation
+      attr_reader :limit_value, :offset_value
+
       def initialize(resource_class, options = {})
         super
+        @limit_value = options.fetch(:limit, nil)
+        @offset_value = options.fetch(:offset, nil)
       end
 
       def params
-        super #.
+        super.
+          merge(page_param)
           # merge(sort_param).
           # merge(include_param).
           # merge(page_param)
@@ -127,6 +134,19 @@ module JSONAPI
       # rescue => e
       # # rescue JSONAPI::Exceptions::Error => e
       #   return JSONAPI::ErrorsOperationResult.new(e.errors[0].code, e.errors)
+      end
+
+      private
+
+      def page_param
+        page = {}
+        page.merge!(limit: limit_value) if limit_value
+        page.merge!(offset: offset_value) if offset_value
+        if page.empty?
+          {}
+        else
+          { page: page }
+        end
       end
     end
 
