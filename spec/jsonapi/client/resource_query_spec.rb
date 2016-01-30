@@ -106,11 +106,96 @@ describe JSONAPI::Client::Resource, "query" do
     end
   end
 
-  describe "#where" do
-    context "when resource is not found" do
-      # TODO:
+  describe "#order" do
+    let(:response_body) do
+      {
+        data: {
+          id: "1",
+          type: "articles",
+          attributes: {
+            category: "Programming",
+            title: "Beginner JSONAPI"
+          }
+        }
+      }.to_json
     end
 
+    context "when sorting by a single field" do
+      context "with no order" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(:title).all
+        end
+      end
+
+      context "when sorting asc" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(title: :asc).all
+        end
+      end
+
+      context "when sorting desc" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "-title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(title: :desc).all
+        end
+      end
+    end
+
+    context "when sorting by multiple fields" do
+      context "with no order" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "category,title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(:category, :title).all
+        end
+      end
+
+      context "when sorting asc" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "category,title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(category: :asc, title: :asc).all
+        end
+      end
+
+      context "when sorting desc" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "-category,-title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(category: :desc, title: :desc).all
+        end
+      end
+
+      context "when sorting mixed" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { sort: "category,-title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(category: :asc, title: :desc).all
+        end
+      end
+    end
+  end
+
+  describe "#where" do
     context "when filtering by a single value" do
       let(:response_body) do
         {

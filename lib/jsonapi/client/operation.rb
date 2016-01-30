@@ -110,6 +110,14 @@ module JSONAPI
         end.flatten.join(",")
       end
 
+      def order_operator(arg)
+        if [:desc, :DESC, "desc", "DESC"].include?(arg)
+          "-"
+        else
+          ""
+        end
+      end
+
       def apply
         process(:get, path(params), params.except(resource_class.primary_key))
 
