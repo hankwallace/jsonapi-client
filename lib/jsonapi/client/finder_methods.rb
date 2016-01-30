@@ -1,8 +1,6 @@
 module JSONAPI
   module Client
     module FinderMethods
-      # TODO:
-
       def find(*args)
         find_with_ids(*args)
       end
@@ -29,16 +27,10 @@ module JSONAPI
       end
 
       def find_one(id)
-        # relation = where(primary_key => id)
-        # record = relation.take
-        #
-        # raise_record_not_found_exception!(id, 0, 1) unless record
-        #
-        # record
-
         operations = [
           JSONAPI::Client::ShowOperation.new(klass, {
             id: id,
+            where: where_values,
             select: select_values
           })
         ]
@@ -50,29 +42,26 @@ module JSONAPI
       end
 
       def find_some(ids)
-        where(primary_key => ids).to_a
+        result = where(primary_key => ids).to_a
 
-        # result = where(primary_key => ids).to_a
-        #
-        # expected_size =
-        #   if limit_value && ids.size > limit_value
-        #     limit_value
-        #   else
-        #     ids.size
-        #   end
-        #
-        # # 11 ids with limit 3, offset 9 should give 2 results.
-        # if offset_value && (ids.size - offset_value < expected_size)
-        #   expected_size = ids.size - offset_value
-        # end
-        #
-        # if result.size == expected_size
-        #   result
-        # else
-        #   raise_record_not_found_exception!(ids, result.size, expected_size)
-        # end
+        expected_size =
+          if limit_value && ids.size > limit_value
+            limit_value
+          else
+            ids.size
+          end
+
+        # 11 ids with limit 3, offset 9 should give 2 results.
+        if offset_value && (ids.size - offset_value < expected_size)
+          expected_size = ids.size - offset_value
+        end
+
+        if result.size == expected_size
+          result
+        else
+          raise_record_not_found_exception!(ids, result.size, expected_size)
+        end
       end
-
 
       # This method is called whenever no records are found with either a single
       # id or multiple ids and raises a ActiveRecord::RecordNotFound exception.
@@ -92,11 +81,6 @@ module JSONAPI
 
         raise RecordNotFound, error
       end
-
-        # def find(args = {})
-      #   request_sender.get(params.merge(primary_key_params(args)))
-      # end
-
     end
   end
 end

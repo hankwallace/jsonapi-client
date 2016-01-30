@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe JSONAPI::Client::Resource do
+describe JSONAPI::Client::Resource, "query response" do
   subject { Article }
 
   let(:url) { "#{subject.url}/articles" }

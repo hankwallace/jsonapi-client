@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe JSONAPI::Client::Resource do
+describe JSONAPI::Client::Resource, "query" do
   subject { Article }
 
   let(:url) { "#{subject.url}/articles" }
@@ -20,15 +20,13 @@ describe JSONAPI::Client::Resource do
     context "when finding a single resource" do
       let(:response_body) do
         {
-          data:
-            {
-              id: "1",
-              type: "articles",
-              attributes:
-                {
-                  title: "Beginner JSONAPI"
-                }
+          data: {
+            id: "1",
+            type: "articles",
+            attributes: {
+              title: "Beginner JSONAPI"
             }
+          }
         }.to_json
       end
 
@@ -39,48 +37,38 @@ describe JSONAPI::Client::Resource do
         subject.find(1)
       end
 
-      # TODO: Cover these in the other methods (where, select)
-      # context "when chaining" do
-      #   context "with #select" do
-      #
-      #   end
-      #
-      #   context "with #where" do
-      #     before(:each) do
-      #       stub_request(:get, "#{url}").
-      #         with(query: { filter: { "category" => "Programming", "id" => "1" } }).
-      #         to_return(headers: headers, body: response_body)
-      #     end
-      #
-      #     it "sends the right request" do
-      #       subject.where(category: "Programming").find(1)
-      #     end
-      #   end
-      # end
+      context "when resource is not found" do
+        let(:response_body) do
+          {}.to_json
+        end
+
+        it "raises an exception" do
+          stub_request(:get, "#{url}/1").
+            to_return(headers: headers, body: response_body)
+
+          expect do
+            subject.find(1)
+          end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+        end
+      end
     end
 
     context "when finding multiple resources" do
       let(:response_body) do
         {
-          data:
-            [
-              {
-                id: "1",
-                type: "articles",
-                attributes:
-                  {
-                    title: "Beginner JSONAPI"
-                  }
-              },
-              {
-                type: "articles",
-                id: "2",
-                attributes:
-                  {
-                    title: "Advanced JSONAPI"
-                  }
-              }
-            ]
+          data: [{
+            id: "1",
+            type: "articles",
+            attributes: {
+              title: "Beginner JSONAPI"
+            }
+          }, {
+            type: "articles",
+            id: "2",
+            attributes: {
+              title: "Advanced JSONAPI"
+            }
+          }]
         }.to_json
       end
 
@@ -92,17 +80,29 @@ describe JSONAPI::Client::Resource do
         subject.find(1, 2)
       end
 
-      # context "when resource is not found" do
-      #   it "raises an exception" do
-      #     stub_request(:get, "#{url}/1").
-      #       to_return(headers: headers, body: response_body)
-      #
-      #     expect do
-      #       subject.find(3)
-      #     end.to raise_exception(JSONAPI::Client::RecordNotFound)
-      #   end
-      # end
+      context "when resources are not found" do
+        let(:response_body) do
+          {
+            data: [{
+              id: "1",
+              type: "articles",
+              attributes: {
+                title: "Beginner JSONAPI"
+              }
+            }]
+          }.to_json
+        end
 
+        it "raises an exception" do
+          stub_request(:get, url).
+            with(query: { filter: { "id" => "1,3" } }).
+            to_return(headers: headers, body: response_body)
+
+          expect do
+            subject.find(1, 3)
+          end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find all Articles/)
+        end
+      end
     end
   end
 
@@ -114,16 +114,14 @@ describe JSONAPI::Client::Resource do
     context "when filtering by a single value" do
       let(:response_body) do
         {
-          data:
-            {
-              id: "1",
-              type: "articles",
-              attributes:
-                {
-                  category: "Programming",
-                  title: "Beginner JSONAPI"
-                }
+          data: {
+            id: "1",
+            type: "articles",
+            attributes: {
+              category: "Programming",
+              title: "Beginner JSONAPI"
             }
+          }
         }.to_json
       end
 
@@ -149,27 +147,21 @@ describe JSONAPI::Client::Resource do
     context "when filtering by multiple values" do
       let(:response_body) do
         {
-          data:
-            [
-              {
-                id: "1",
-                type: "articles",
-                attributes:
-                  {
-                    category: "Programming",
-                    title: "Beginner JSONAPI"
-                  }
-              },
-              {
-                type: "articles",
-                id: "2",
-                attributes:
-                  {
-                    category: "Programming",
-                    title: "Advanced JSONAPI"
-                  }
-              }
-            ]
+          data: [{
+            id: "1",
+            type: "articles",
+            attributes: {
+              category: "Programming",
+              title: "Beginner JSONAPI"
+            }
+          }, {
+            type: "articles",
+            id: "2",
+            attributes: {
+              category: "Programming",
+              title: "Advanced JSONAPI"
+            }
+          }]
         }.to_json
       end
 
@@ -200,52 +192,19 @@ describe JSONAPI::Client::Resource do
         end
       end
     end
-
-
-    context "when chaining" do
-      # TODO:
-    end
   end
 
   describe "#select" do
-    # let(:response_body) do
-    #   {
-    #     data:
-    #       [
-    #         {
-    #           id: "1",
-    #           type: "articles",
-    #           attributes:
-    #             {
-    #               title: "Beginner JSONAPI"
-    #             }
-    #         },
-    #         {
-    #           type: "articles",
-    #           id: "2",
-    #           attributes:
-    #             {
-    #               title: "Advanced JSONAPI"
-    #             }
-    #         }
-    #       ]
-    #   }.to_json
-    # end
-
-    # TODO: Is it possible to call the SHOW endpoint with fields? Try it with PEEPS! YES!!!
-
     context "when selecting a single field" do
       let(:response_body) do
         {
-          data:
-            {
-              id: "1",
-              type: "articles",
-              attributes:
-                {
-                  title: "Beginner JSONAPI"
-                }
+          data: {
+            id: "1",
+            type: "articles",
+            attributes: {
+              title: "Beginner JSONAPI"
             }
+          }
         }.to_json
       end
 
@@ -312,37 +271,5 @@ describe JSONAPI::Client::Resource do
         end
       end
     end
-
-
-    context "when chaining" do
-      context "with #find" do
-        let(:response_body) do
-          {
-            data:
-              {
-                id: "1",
-                type: "articles",
-                attributes:
-                  {
-                    title: "Beginner JSONAPI"
-                  }
-              }
-          }.to_json
-        end
-
-        it "sends the right request" do
-          stub_request(:get, "#{url}/1").
-            with(query: { fields: { "articles" => "title" } }).
-            to_return(headers: headers, body: response_body)
-
-          subject.select(:title).find(1)
-        end
-      end
-
-      context "with #where" do
-
-      end
-    end
   end
-
 end

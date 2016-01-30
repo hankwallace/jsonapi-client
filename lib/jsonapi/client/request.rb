@@ -50,7 +50,7 @@ module JSONAPI
       def all
         # request_sender.get(params)
         operations.push(
-          JSONAPI::Client::FindOperation.new(resource_class, params)
+          JSONAPI::Client::IndexOperation.new(resource_class, params)
         )
         operations_processor.process(operations)
       end

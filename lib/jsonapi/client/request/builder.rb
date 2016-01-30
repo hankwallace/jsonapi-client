@@ -5,7 +5,6 @@
 #         extend Forwardable
 #         include Filtering
 #         include Sorting
-#         include SparseFieldsets
 #         include Pagination
 #         include Relationships
 #
