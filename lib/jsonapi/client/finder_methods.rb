@@ -30,8 +30,9 @@ module JSONAPI
         operations = [
           JSONAPI::Client::ShowOperation.new(klass, {
             id: id,
-            where: where_values,
-            select: select_values
+            order: order_values,
+            select: select_values,
+            where: where_values
           })
         ]
         resource = operations_processor.process(operations).first

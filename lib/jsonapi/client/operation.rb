@@ -36,17 +36,19 @@ module JSONAPI
     end
 
     class QueryOperation < Operation
-      attr_reader :where_values, :select_values
+      attr_reader :order_values, :select_values, :where_values
 
       def initialize(resource_class, options = {})
         super
-        @where_values = options.fetch(:where, [])
+        @order_values = options.fetch(:order, [])
         @select_values = options.fetch(:select, [])
+        @where_values = options.fetch(:where, [])
       end
 
       def params
         fields_param.
-          merge(filter_param)
+          merge(filter_param).
+          merge(sort_param)
       end
 
       def filter_param
@@ -76,22 +78,6 @@ module JSONAPI
           end
         end.flatten
       end
-    end
-
-    class IndexOperation < QueryOperation
-      attr_reader :order_values
-
-      def initialize(resource_class, options = {})
-        super
-        @order_values = options.fetch(:order, [])
-      end
-
-      def params
-        super.
-          merge(sort_param) #.
-          # merge(include_param).
-          # merge(page_param)
-      end
 
       def sort_param
         order_values.present? ? { sort: sort_value } : {}
@@ -116,6 +102,19 @@ module JSONAPI
         else
           ""
         end
+      end
+    end
+
+    class IndexOperation < QueryOperation
+      def initialize(resource_class, options = {})
+        super
+      end
+
+      def params
+        super #.
+          # merge(sort_param).
+          # merge(include_param).
+          # merge(page_param)
       end
 
       def apply

@@ -93,9 +93,9 @@ module JSONAPI
       def all
         operations = [
           JSONAPI::Client::IndexOperation.new(klass, {
-            where: where_values,
             order: order_values,
-            select: select_values
+            select: select_values,
+            where: where_values
           })
         ]
         operations_processor.process(operations)

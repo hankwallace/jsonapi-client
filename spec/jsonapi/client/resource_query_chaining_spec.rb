@@ -41,6 +41,16 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
+    describe "#where #order #find" do
+      it "sends the right request" do
+        stub_request(:get, "#{url}/1").
+          with(query: { filter: { "category" => "Programming" }, sort: "title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.where(category: "Programming").order(:title).find(1)
+      end
+    end
+
     describe "#where #select #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
@@ -92,6 +102,15 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
+    describe "#where #order #all" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { filter: { "category" => "Programming" }, sort: "title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.where(category: "Programming").order(:title).all
+      end
+    end
 
     describe "#where #select #all" do
       it "sends the right request" do
