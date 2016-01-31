@@ -21,8 +21,8 @@ describe JSONAPI::Client::Resource, "query" do
       let(:response_body) do
         {
           data: {
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               title: "Beginner JSONAPI"
             }
@@ -57,8 +57,8 @@ describe JSONAPI::Client::Resource, "query" do
       let(:response_body) do
         {
           data: [{
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               title: "Beginner JSONAPI"
             }
@@ -84,8 +84,8 @@ describe JSONAPI::Client::Resource, "query" do
         let(:response_body) do
           {
             data: [{
-              id: "1",
               type: "articles",
+              id: "1",
               attributes: {
                 title: "Beginner JSONAPI"
               }
@@ -106,12 +106,88 @@ describe JSONAPI::Client::Resource, "query" do
     end
   end
 
+  describe "#include" do
+    context "when finding a single resource" do
+      let(:response_body) do
+        {
+          data: {
+            type: "articles",
+            id: "1",
+            attributes: {
+              title: "Beginner JSONAPI"
+            },
+            relationships: {
+              author: {
+                data: {
+                  type: "people",
+                  id: "9"
+                }
+              }
+            }
+          }
+        }.to_json
+      end
+
+      it "sends the right request" do
+        stub_request(:get, "#{url}/1").
+          with(query: { include: "author" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.includes(:author).find(1)
+      end
+    end
+
+    context "when finding multiple resources" do
+      let(:response_body) do
+        {
+          data: [{
+            type: "articles",
+            id: "1",
+            attributes: {
+              title: "Beginner JSONAPI"
+            },
+            relationships: {
+              author: {
+                data: {
+                  type: "people",
+                  id: "9"
+                }
+              }
+            }
+          }, {
+            type: "articles",
+            id: "2",
+            attributes: {
+              title: "Advanced JSONAPI"
+            },
+            relationships: {
+              author: {
+                data: {
+                  type: "people",
+                  id: "7"
+                }
+              }
+            }
+          }]
+        }.to_json
+      end
+
+      it "sends the right request" do
+        stub_request(:get, "#{url}").
+          with(query: { include: "author" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.includes(:author).all
+      end
+    end
+  end
+
   describe "#order" do
     let(:response_body) do
       {
         data: {
-          id: "1",
           type: "articles",
+          id: "1",
           attributes: {
             category: "Programming",
             title: "Beginner JSONAPI"
@@ -123,7 +199,7 @@ describe JSONAPI::Client::Resource, "query" do
     context "with no argument" do
       it "raises an exception" do
         expect do
-          subject.order.all
+          subject.order
         end.to raise_exception(ArgumentError, "The method .order() must contain arguments.")
       end
     end
@@ -224,8 +300,8 @@ describe JSONAPI::Client::Resource, "query" do
         let(:response_body) do
           {
             data: [{
-              id: "1",
               type: "articles",
+              id: "1",
               attributes: {
                 title: "Beginner JSONAPI"
               }
@@ -288,12 +364,20 @@ describe JSONAPI::Client::Resource, "query" do
   end
 
   describe "#where" do
+    context "with no argument" do
+      it "raises an exception" do
+        expect do
+          subject.where
+        end.to raise_exception(ArgumentError, "The method .where() must contain arguments.")
+      end
+    end
+
     context "when filtering by a single value" do
       let(:response_body) do
         {
           data: {
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               category: "Programming",
               title: "Beginner JSONAPI"
@@ -325,8 +409,8 @@ describe JSONAPI::Client::Resource, "query" do
       let(:response_body) do
         {
           data: [{
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               category: "Programming",
               title: "Beginner JSONAPI"
@@ -372,12 +456,20 @@ describe JSONAPI::Client::Resource, "query" do
   end
 
   describe "#select" do
+    context "with no argument" do
+      it "raises an exception" do
+        expect do
+          subject.select
+        end.to raise_exception(ArgumentError, "The method .select() must contain arguments.")
+      end
+    end
+
     context "when selecting a single field" do
       let(:response_body) do
         {
           data: {
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               title: "Beginner JSONAPI"
             }
@@ -409,8 +501,8 @@ describe JSONAPI::Client::Resource, "query" do
       let(:response_body) do
         {
           data: {
-            id: "1",
             type: "articles",
+            id: "1",
             attributes: {
               category: "Programming",
               title: "Beginner JSONAPI"

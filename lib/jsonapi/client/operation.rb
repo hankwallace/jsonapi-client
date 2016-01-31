@@ -36,29 +36,49 @@ module JSONAPI
     end
 
     class QueryOperation < Operation
-      attr_reader :order_values, :select_values, :where_values
+      attr_reader :includes_values, :order_values, :select_values, :where_values
 
       def initialize(resource_class, options = {})
         super
+        @includes_values = options.fetch(:includes, [])
         @order_values = options.fetch(:order, [])
         @select_values = options.fetch(:select, [])
         @where_values = options.fetch(:where, [])
       end
 
       def params
-        fields_param.
+        include_param.
+          merge(fields_param).
           merge(filter_param).
           merge(sort_param)
       end
 
       private
 
-      def fields_param
-        select_values.present? ? { fields: { resource_class.table_name => fields_value } } : {}
+      def include_param
+        if includes_values.present?
+          { include: process_includes_values(includes_values).join(",") }
+        else
+          {}
+        end
       end
 
-      def fields_value
-        process_field_values(select_values).join(",")
+      def process_includes_values(values)
+        values.map do |value|
+          if value.is_a?(Array)
+            process_includes_values(value)
+          else
+            value.to_s.split(",").map(&:strip)
+          end
+        end
+      end
+
+      def fields_param
+        if select_values.present?
+          { fields: { resource_class.table_name => process_field_values(select_values).join(",") } }
+        else
+          {}
+        end
       end
 
       def process_field_values(values)

@@ -98,6 +98,7 @@ module JSONAPI
       end
 
       def select!(*args)
+        check_if_method_has_arguments!(:select, args)
         # validate_select(args)
         self.select_values += args
         self
@@ -108,6 +109,7 @@ module JSONAPI
       end
 
       def where!(*args) # :nodoc:
+        check_if_method_has_arguments!(:where, args)
         # self.where_values = args.reduce(&:merge)
         self.where_values += args
         self

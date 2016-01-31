@@ -21,6 +21,16 @@ describe JSONAPI::Client::Resource, "query chaining" do
       }.to_json
     end
 
+    describe "#include #select #find" do
+      it "sends the right request" do
+        stub_request(:get, "#{url}/1").
+          with(query: { include: "author", fields: { "articles" => "title" } }).
+          to_return(headers: headers, body: response_body)
+
+        subject.includes(:author).select(:title).find(1)
+      end
+    end
+
     describe "#select #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
@@ -31,6 +41,16 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
+    describe "#select #include #find" do
+      it "sends the right request" do
+        stub_request(:get, "#{url}/1").
+          with(query: { include: "author", fields: { "articles" => "title" } }).
+          to_return(headers: headers, body: response_body)
+
+        subject.select(:title).includes(:author).find(1)
+      end
+    end
+
     describe "#select #where #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
@@ -38,6 +58,16 @@ describe JSONAPI::Client::Resource, "query chaining" do
           to_return(headers: headers, body: response_body)
 
         subject.select(:title).where(category: "Programming").find(1)
+      end
+    end
+
+    describe "#where #include #find" do
+      it "sends the right request" do
+        stub_request(:get, "#{url}/1").
+          with(query: { include: "author", filter: { "category" => "Programming" } }).
+          to_return(headers: headers, body: response_body)
+
+        subject.where(category: "Programming").includes(:author).find(1)
       end
     end
 

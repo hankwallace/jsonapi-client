@@ -30,6 +30,7 @@ module JSONAPI
         operations = [
           JSONAPI::Client::ShowOperation.new(klass, {
             id: id,
+            includes: includes_values,
             order: order_values,
             select: select_values,
             where: where_values

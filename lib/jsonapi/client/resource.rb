@@ -130,6 +130,8 @@ module JSONAPI
         #   end
         # end
 
+        # TODO: Any way to include the SpawnMethods, etc here instead of adding these manually?
+
         def includes(*args)
           new_relation.tap { |r| r.includes!(*args) }
         end
