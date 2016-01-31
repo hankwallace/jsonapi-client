@@ -122,33 +122,67 @@ describe JSONAPI::Client::Resource, "query chaining" do
       }.to_json
     end
 
-    describe "#select #where #all" do
-      it "sends the right request" do
-        stub_request(:get, url).
-          with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming" } }).
-          to_return(headers: headers, body: response_body)
+    context "using #all" do
+      describe "#select #where #all" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming" } }).
+            to_return(headers: headers, body: response_body)
 
-        subject.select(:title).where(category: "Programming").all
+          subject.select(:title).where(category: "Programming").all
+        end
+      end
+
+      describe "#where #order #all" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { filter: { "category" => "Programming" }, sort: "title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.where(category: "Programming").order(:title).all
+        end
+      end
+
+      describe "#where #select #all" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming" } }).
+            to_return(headers: headers, body: response_body)
+
+          subject.where(category: "Programming").select(:title).all
+        end
       end
     end
 
-    describe "#where #order #all" do
-      it "sends the right request" do
-        stub_request(:get, url).
-          with(query: { filter: { "category" => "Programming" }, sort: "title" }).
-          to_return(headers: headers, body: response_body)
+    context "using #find" do
+      describe "#select #where #find" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming", "id" => "1,2" } }).
+            to_return(headers: headers, body: response_body)
 
-        subject.where(category: "Programming").order(:title).all
+          subject.select(:title).where(category: "Programming").find(1, 2)
+        end
       end
     end
 
-    describe "#where #select #all" do
+    describe "#where #order #find" do
       it "sends the right request" do
         stub_request(:get, url).
-          with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming" } }).
+          with(query: { filter: { "category" => "Programming", "id" => "1,2" }, sort: "title" }).
           to_return(headers: headers, body: response_body)
 
-        subject.where(category: "Programming").select(:title).all
+        subject.where(category: "Programming").order(:title).find(1, 2)
+      end
+    end
+
+    describe "#where #select #find" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { fields: { "articles" => "title" }, filter: { "category" => "Programming", "id" => "1,2" } }).
+          to_return(headers: headers, body: response_body)
+
+        subject.where(category: "Programming").select(:title).find(1, 2)
       end
     end
   end
