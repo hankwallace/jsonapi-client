@@ -11,16 +11,14 @@ describe JSONAPI::Client::Resource, "query response" do
   context "when a single resource is returned" do
     let(:response_body) do
       {
-        data:
-          {
-            id: "1",
-            type: "articles",
-            attributes:
-              {
-                category: "Programming",
-                title: "Beginner JSONAPI"
-              }
+        data: {
+          id: "1",
+          type: "articles",
+          attributes: {
+            category: "Programming",
+            title: "Beginner JSONAPI"
           }
+        }
       }.to_json
     end
 
@@ -40,27 +38,21 @@ describe JSONAPI::Client::Resource, "query response" do
   context "when multiple resources are returned" do
     let(:response_body) do
       {
-        data:
-          [
-            {
-              id: "1",
-              type: "articles",
-              attributes:
-                {
-                  category: "Programming",
-                  title: "Beginner JSONAPI"
-                }
-            },
-            {
-              type: "articles",
-              id: "2",
-              attributes:
-                {
-                  category: "Programming",
-                  title: "Advanced JSONAPI"
-                }
-            }
-          ]
+        data: [ {
+          id: "1",
+          type: "articles",
+          attributes: {
+            category: "Programming",
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            category: "Programming",
+            title: "Advanced JSONAPI"
+          }
+        }]
       }.to_json
     end
 

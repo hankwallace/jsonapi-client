@@ -20,16 +20,14 @@ describe JSONAPI::Client::Serializer do
       end
       let(:expected_body) do
         {
-          "data" =>
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "first-name" => "John",
-                    "last-name" => "Doe"
-                  }
-              }
+          "data" => {
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "first-name" => "John",
+              "last-name" => "Doe"
+            }
+          }
         }
       end
 
@@ -47,16 +45,14 @@ describe JSONAPI::Client::Serializer do
       end
       let(:expected_body) do
         {
-          "data" =>
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "firstName" => "John",
-                    "lastName" => "Doe"
-                  }
-              }
+          "data" => {
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "firstName" => "John",
+              "lastName" => "Doe"
+            }
+          }
         }
       end
 
@@ -74,16 +70,14 @@ describe JSONAPI::Client::Serializer do
       end
       let(:expected_body) do
         {
-          "data" =>
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "first_name" => "John",
-                    "last_name" => "Doe"
-                  }
-              }
+          "data" => {
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "first_name" => "John",
+              "last_name" => "Doe"
+            }
+          }
         }
       end
 
@@ -98,18 +92,14 @@ describe JSONAPI::Client::Serializer do
     context "when keys are dasherized" do
       let(:body) do
         {
-          "data" =>
-            [
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "first-name" => "John",
-                    "last-name" => "Doe"
-                  }
-              }
-            ]
+          "data" => [{
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "first-name" => "John",
+              "last-name" => "Doe"
+            }
+          }]
         }
       end
       let(:options) do
@@ -128,18 +118,14 @@ describe JSONAPI::Client::Serializer do
     context "when keys are camelized" do
       let(:body) do
         {
-          "data" =>
-            [
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "firstName" => "John",
-                    "lastName" => "Doe"
-                  }
-              }
-            ]
+          "data" => [{
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "firstName" => "John",
+              "lastName" => "Doe"
+            }
+          }]
         }
       end
       let(:options) do
@@ -158,18 +144,14 @@ describe JSONAPI::Client::Serializer do
     context "when keys are underscored" do
       let(:body) do
         {
-          "data" =>
-            [
-              {
-                "type" => "authors",
-                "id" => "1",
-                "attributes" =>
-                  {
-                    "first_name" => "John",
-                    "last_name" => "Doe"
-                  }
-              }
-            ]
+          "data" => [{
+            "type" => "authors",
+            "id" => "1",
+            "attributes" => {
+              "first_name" => "John",
+              "last_name" => "Doe"
+            }
+          }]
         }
       end
       let(:options) do
