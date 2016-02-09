@@ -16,15 +16,15 @@ module JSONAPI
   module Client
     autoload(:Connection, "jsonapi/client/connection")
     autoload(:Middleware, "jsonapi/client/middleware")
-    # autoload(:Request, "jsonapi/client/request")
-    # autoload(:Response, "jsonapi/client/response")
+
+    autoload(:Querying, "jsonapi/client/querying")
     autoload(:Resource, "jsonapi/client/resource")
     autoload(:Serializer, "jsonapi/client/serializer")
 
     autoload(:Relation, "jsonapi/client/relation")
     autoload(:SpawnMethods, "jsonapi/client/spawn_methods")
-    autoload(:QueryMethods, "jsonapi/client/query_methods")
-    autoload(:FinderMethods, "jsonapi/client/finder_methods")
+    autoload(:QueryMethods, "jsonapi/client/relation/query_methods")
+    autoload(:FinderMethods, "jsonapi/client/relation/finder_methods")
 
     # autoload(:Operation, "jsonapi/client/operation")
     autoload(:OperationResult, "jsonapi/client/operation_result")

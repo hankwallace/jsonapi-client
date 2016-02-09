@@ -6,6 +6,9 @@ require "jsonapi/client/attributes"
 module JSONAPI
   module Client
     class Resource
+
+      extend Querying
+
       # TODO: Why these ActiveModel things?
       # extend ActiveModel::Naming
       # extend ActiveModel::Translation
@@ -113,43 +116,6 @@ module JSONAPI
 
         # TODO: Any way to include the SpawnMethods, etc here instead of adding these manually?
 
-        def includes(*args)
-          new_relation.tap { |r| r.includes!(*args) }
-        end
-
-        def limit(value)
-          new_relation.tap { |r| r.limit!(value) }
-        end
-
-        def offset(value)
-          new_relation.tap { |r| r.offset!(value) }
-        end
-
-        def order(*args)
-          new_relation.tap { |r| r.order!(*args) }
-        end
-
-        def where(*args)
-          new_relation.tap { |r| r.where!(*args) }
-        end
-
-        def select(*args)
-          new_relation.tap { |r| r.select!(*args) }
-        end
-
-        # TODO: Move this to QueryMethods?
-        def all
-          # TODO: chain after all? if so, do a tap here too!
-          new_relation.all
-        end
-
-        def find(*args)
-          # TODO: chain after find? if so, do a tap here too!
-          new_relation.find(*args)
-        end
-
-
-
 
         # def create(attributes = nil, &block)
         #   new(attributes, &block).tap { |resource| resource.save }
@@ -167,7 +133,7 @@ module JSONAPI
 
         private
 
-        def new_relation # :nodoc:
+        def relation # :nodoc:
           JSONAPI::Client::Relation.new(self)
         end
 
