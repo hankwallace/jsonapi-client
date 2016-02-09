@@ -7,8 +7,8 @@ require "jsonapi/client/version"
 
 # TODO: or autolaod?
 require "jsonapi/client/operation"
-require "jsonapi/client/operation_result"
-require "jsonapi/client/operation_results"
+# require "jsonapi/client/operation_result"
+# require "jsonapi/client/operation_results"
 
 require "jsonapi/client/errors"
 
@@ -26,6 +26,9 @@ module JSONAPI
     autoload(:QueryMethods, "jsonapi/client/query_methods")
     autoload(:FinderMethods, "jsonapi/client/finder_methods")
 
+    # autoload(:Operation, "jsonapi/client/operation")
+    autoload(:OperationResult, "jsonapi/client/operation_result")
+    autoload(:OperationResults, "jsonapi/client/operation_results")
     autoload(:OperationsProcessor, "jsonapi/client/operations_processor")
   end
 end

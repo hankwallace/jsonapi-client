@@ -43,10 +43,6 @@ module JSONAPI
         CODE
       end
 
-      # def includes(*args)
-      #
-      # end
-
       # TODO: instead of calling the arg "conditions", it should probably be called "values"
       # because they are more like attributes. They only become "conditions" if a query
       # method is called. ex: User.where(last_name: 'Snow').create(email: 'jon@example.com')

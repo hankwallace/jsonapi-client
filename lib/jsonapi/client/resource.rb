@@ -2,13 +2,6 @@ require "forwardable"
 require "active_support/all"
 require "active_model"
 require "jsonapi/client/attributes"
-# require "jsonapi/client/resource_serialization"
-require "jsonapi/client/request_sender"
-
-# require "jsonapi/client/relation"
-
-require "active_support/all"
-
 
 module JSONAPI
   module Client
@@ -40,8 +33,6 @@ module JSONAPI
                       :connection,
                       :connection_class,
                       :connection_options,
-                      # :request_class,
-                      # :request_sender_class,
                       :serializer_class,
                       :route_format,
                       :route_formatter,
@@ -52,8 +43,6 @@ module JSONAPI
       self.primary_key = :id
       self.connection_class = JSONAPI::Client::Connection
       self.connection_options = {}
-      # self.request_class = JSONAPI::Client::Request
-      # self.request_sender_class = JSONAPI::Client::RequestSender
       self.serializer_class = JSONAPI::Client::Serializer
       self.readonly_attributes = [:id, :type, :links, :meta, :relationships]
 
@@ -77,14 +66,6 @@ module JSONAPI
               yield(conn) if block_given?
             end
         end
-
-        # def request
-        #   request_class.new(self)
-        # end
-
-        # def request_sender
-        #   request_sender_class.new(self)
-        # end
 
         def serializer
           serializer_class.new(self, { key_formatter: key_formatter })
@@ -156,15 +137,19 @@ module JSONAPI
           new_relation.tap { |r| r.select!(*args) }
         end
 
+        # TODO: Move this to QueryMethods?
         def all
           # TODO: chain after all? if so, do a tap here too!
           new_relation.all
         end
 
         def find(*args)
-          # TODO: chain after all? if so, do a tap here too!
+          # TODO: chain after find? if so, do a tap here too!
           new_relation.find(*args)
         end
+
+
+
 
         # def create(attributes = nil, &block)
         #   new(attributes, &block).tap { |resource| resource.save }
@@ -186,12 +171,10 @@ module JSONAPI
           JSONAPI::Client::Relation.new(self)
         end
 
-
         # def add_relationship(klass, *attrs)
         #   options = attrs.extract_options!
         #
         # end
-
 
       end
 
