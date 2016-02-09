@@ -37,6 +37,21 @@ module JSONAPI
           super
         end
 
+        def format_params(params)
+          case params
+          when Array
+            params.map do |p|
+              format_params(p)
+            end
+          when Hash
+            params.map do |k, v|
+              { format(k) => format_params(v) }
+            end.inject({}, &:merge)
+          else
+            params
+          end
+        end
+
         def unformat(formatted_route)
           super.to_s.underscore
         end

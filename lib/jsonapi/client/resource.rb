@@ -41,7 +41,7 @@ module JSONAPI
                       :connection_class,
                       :connection_options,
                       # :request_class,
-                      :request_sender_class,
+                      # :request_sender_class,
                       :serializer_class,
                       :route_format,
                       :route_formatter,
@@ -53,7 +53,7 @@ module JSONAPI
       self.connection_class = JSONAPI::Client::Connection
       self.connection_options = {}
       # self.request_class = JSONAPI::Client::Request
-      self.request_sender_class = JSONAPI::Client::RequestSender
+      # self.request_sender_class = JSONAPI::Client::RequestSender
       self.serializer_class = JSONAPI::Client::Serializer
       self.readonly_attributes = [:id, :type, :links, :meta, :relationships]
 
@@ -87,7 +87,7 @@ module JSONAPI
         # end
 
         def serializer
-          serializer_class.new(self)
+          serializer_class.new(self, { key_formatter: key_formatter })
         end
 
         def path(params = nil)
@@ -166,19 +166,19 @@ module JSONAPI
           new_relation.find(*args)
         end
 
-        def create(attributes = nil, &block)
-          new(attributes, &block).tap { |resource| resource.save }
-        end
+        # def create(attributes = nil, &block)
+        #   new(attributes, &block).tap { |resource| resource.save }
+        # end
 
         protected
 
-        def has_one(*attrs)
-          add_relationship(Relationship::ToOne, *attrs)
-        end
-
-        def has_many(*attrs)
-          add_relationship(Relationship::ToMany, *attrs)
-        end
+        # def has_one(*attrs)
+        #   add_relationship(Relationship::ToOne, *attrs)
+        # end
+        #
+        # def has_many(*attrs)
+        #   add_relationship(Relationship::ToMany, *attrs)
+        # end
 
         private
 
@@ -187,10 +187,10 @@ module JSONAPI
         end
 
 
-        def add_relationship(klass, *attrs)
-          options = attrs.extract_options!
-
-        end
+        # def add_relationship(klass, *attrs)
+        #   options = attrs.extract_options!
+        #
+        # end
 
 
       end
@@ -208,33 +208,33 @@ module JSONAPI
       #   _updatable_
       # end
 
-      def new_record?
-        @new_record
-      end
-
-      def destroyed?
-        @destroyed
-      end
-
-      def persisted?
-        !(@new_record || @destroyed)
-      end
-
-      def save
-        # self.class.request_sender.create(self)
-        create_or_update
-      end
-
-      # TODO: From Rails
-      # def update_attribute(name, value)
-      #
+      # def new_record?
+      #   @new_record
       # end
-
-      def update(attributes)
-        assign_attributes(attributes)
-        save
-      end
-      alias update_attributes update
+      #
+      # def destroyed?
+      #   @destroyed
+      # end
+      #
+      # def persisted?
+      #   !(@new_record || @destroyed)
+      # end
+      #
+      # def save
+      #   # self.class.request_sender.create(self)
+      #   create_or_update
+      # end
+      #
+      # # TODO: From Rails
+      # # def update_attribute(name, value)
+      # #
+      # # end
+      #
+      # def update(attributes)
+      #   assign_attributes(attributes)
+      #   save
+      # end
+      # alias update_attributes update
 
       # TODO: From Rails: increment, decrement, toggle?
 
@@ -245,54 +245,54 @@ module JSONAPI
 
       private
 
-      def create_or_update(*args)
-        # raise ReadOnlyRecord, "#{self.class} is marked as readonly" if readonly?
-        result = new_record? ? _create_resource : _update_resource
-        result != false
+      # def create_or_update(*args)
+      #   # raise ReadOnlyRecord, "#{self.class} is marked as readonly" if readonly?
+      #   result = new_record? ? _create_resource : _update_resource
+      #   result != false
+      #
+      #   self.last_operation_result = if new_record?
+      #                                  _create_resource
+      #                                else
+      #                                  _update_resource
+      #                                end
+      #
+      #   # if last_result_set.has_errors?
+      #   #   last_result_set.errors.each do |error|
+      #   #     if error.source_parameter
+      #   #       errors.add(error.source_parameter, error.title)
+      #   #     else
+      #   #       errors.add(:base, error.title)
+      #   #     end
+      #   #   end
+      #   #   false
+      #   # else
+      #   #   self.errors.clear if self.errors
+      #   #   mark_as_persisted!
+      #   #   if updated = last_result_set.first
+      #   #     self.attributes = updated.attributes
+      #   #     self.relationships.attributes = updated.relationships.attributes
+      #   #     clear_changes_information
+      #   #   end
+      #   #   true
+      #   # end
+      #
+      #   if last_operation_result.has_errors?
+      #     # TODO:
+      #     false
+      #   else
+      #     # TODO:
+      #     true
+      #   end
+      # end
 
-        self.last_operation_result = if new_record?
-                                       _create_resource
-                                     else
-                                       _update_resource
-                                     end
-
-        # if last_result_set.has_errors?
-        #   last_result_set.errors.each do |error|
-        #     if error.source_parameter
-        #       errors.add(error.source_parameter, error.title)
-        #     else
-        #       errors.add(:base, error.title)
-        #     end
-        #   end
-        #   false
-        # else
-        #   self.errors.clear if self.errors
-        #   mark_as_persisted!
-        #   if updated = last_result_set.first
-        #     self.attributes = updated.attributes
-        #     self.relationships.attributes = updated.relationships.attributes
-        #     clear_changes_information
-        #   end
-        #   true
-        # end
-
-        if last_operation_result.has_errors?
-          # TODO:
-          false
-        else
-          # TODO:
-          true
-        end
-      end
-
-      def _create_resource
-        self.class.request_sender.create(self).tap
-        @new_record = false
-      end
-
-      def _update_resource
-        # TODO:
-      end
+      # def _create_resource
+      #   self.class.request_sender.create(self).tap
+      #   @new_record = false
+      # end
+      #
+      # def _update_resource
+      #   # TODO:
+      # end
     end
   end
 end

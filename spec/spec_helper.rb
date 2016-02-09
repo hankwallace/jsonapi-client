@@ -32,6 +32,10 @@ class Author < JSONAPI::Client::Resource
   self.url = "http://www.example.com"
 end
 
+# Sample models for key and route formatting specs
+class ExpenseReport < JSONAPI::Client::Resource
+  self.url = "http://www.example.com"
+end
 
 RSpec.configure do |config|
   config.include JsonSpec::Helpers

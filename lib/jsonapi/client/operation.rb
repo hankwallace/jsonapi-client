@@ -30,7 +30,7 @@ module JSONAPI
       end
 
       def process(method, path, params)
-        response = connection.send(method, route_formatter.format(path), params)
+        response = connection.send(method, route_formatter.format(path), route_formatter.format_params(params))
         serializer.deserialize(response.body || {})
       end
     end

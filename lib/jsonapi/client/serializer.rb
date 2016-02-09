@@ -69,6 +69,7 @@ module JSONAPI
         end
       end
 
+      # TODO: Handle compound documents (ie. nested hashes)
       def deserialize_attributes(data)
         data.fetch("attributes", {}).
           merge(data.slice("id", "links", "meta", "type", "relationships")).map do |key, value|

@@ -128,12 +128,24 @@ describe JSONAPI::Client::Resource, "query" do
         }.to_json
       end
 
-      it "sends the right request" do
-        stub_request(:get, "#{url}/1").
-          with(query: { include: "author" }).
-          to_return(headers: headers, body: response_body)
+      context "when including a single relationship" do
+        before(:each) do
+          stub_request(:get, "#{url}/1").
+            with(query: { include: "author" }).
+            to_return(headers: headers, body: response_body)
+        end
 
-        subject.includes(:author).find(1)
+        context "with a string" do
+          it "sends the right request" do
+            subject.includes("author").find(1)
+          end
+        end
+
+        context "with a symbol" do
+          it "sends the right request" do
+            subject.includes(:author).find(1)
+          end
+        end
       end
     end
 
@@ -444,7 +456,6 @@ describe JSONAPI::Client::Resource, "query" do
         it "sends the right request" do
           subject.where(category: ["Programming", "Management"]).all
         end
-
       end
 
       context "with an array of symbols" do
