@@ -18,7 +18,6 @@ module JSONAPI
     # end
 
     autoload :Connection
-    autoload :Middleware
     autoload :Querying
     autoload :Attributes
     autoload :Resource
@@ -41,5 +40,11 @@ module JSONAPI
     autoload :OperationsProcessor
 
     autoload :RecordNotFound, "jsonapi/client/errors"
+
+    module Middleware
+      extend ActiveSupport::Autoload
+
+      autoload :EncodeJsonApi
+    end
   end
 end
