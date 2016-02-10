@@ -122,6 +122,15 @@ describe JSONAPI::Client::Resource, "query" do
                   type: "people",
                   id: "9"
                 }
+              },
+              comments: {
+                data: [{
+                  type: "comments",
+                  id: "5"
+                }, {
+                  type: "comments",
+                  id: "12"
+                }]
               }
             }
           }
@@ -144,6 +153,32 @@ describe JSONAPI::Client::Resource, "query" do
         context "with a symbol" do
           it "sends the right request" do
             subject.includes(:author).find(1)
+          end
+        end
+      end
+
+      context "when including multiple relationships" do
+        before(:each) do
+          stub_request(:get, "#{url}/1").
+            with(query: { include: "author,comments" }).
+            to_return(headers: headers, body: response_body)
+        end
+
+        context "with a comma-delimited string" do
+          it "sends the right request" do
+            subject.includes("author, comments").find(1)
+          end
+        end
+
+        context "with an array of strings" do
+          it "sends the right request" do
+            subject.includes("author", "comments").find(1)
+          end
+        end
+
+        context "with an array of symbols" do
+          it "sends the right request" do
+            subject.includes(:author, :comments).find(1)
           end
         end
       end

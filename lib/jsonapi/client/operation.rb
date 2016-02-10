@@ -65,11 +65,7 @@ module JSONAPI
 
       def process_includes_values(values)
         values.map do |value|
-          if value.is_a?(Array)
-            process_includes_values(value)
-          else
-            value.to_s.split(",").map(&:strip)
-          end
+          value.to_s.split(",").map(&:strip)
         end
       end
 

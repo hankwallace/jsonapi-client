@@ -95,6 +95,7 @@ module JSONAPI
 
       def select!(*args)
         check_if_method_has_arguments!(:select, args)
+        args.reject!(&:blank?)
         # validate_select(args)
         self.select_values += args
         self
