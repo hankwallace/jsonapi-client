@@ -1,8 +1,3 @@
-require "forwardable"
-require "active_support/all"
-require "active_model"
-require "jsonapi/client/attributes"
-
 module JSONAPI
   module Client
     class Resource

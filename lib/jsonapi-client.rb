@@ -2,33 +2,44 @@ require "faraday"
 require "faraday_middleware"
 require "json"
 require "addressable/uri"
-require "jsonapi/client/configuration"
+require "active_model"
+require "active_support/all"
 require "jsonapi/client/version"
-
-# TODO: or autolaod?
-require "jsonapi/client/operation"
-# require "jsonapi/client/operation_result"
-# require "jsonapi/client/operation_results"
-
-require "jsonapi/client/errors"
+require "jsonapi/client/configuration"
 
 module JSONAPI
   module Client
-    autoload(:Connection, "jsonapi/client/connection")
-    autoload(:Middleware, "jsonapi/client/middleware")
+    extend ActiveSupport::Autoload
 
-    autoload(:Querying, "jsonapi/client/querying")
-    autoload(:Resource, "jsonapi/client/resource")
-    autoload(:Serializer, "jsonapi/client/serializer")
+    # eager_autoload do
+    #   autoload :Formatter
+    #   autoload :OperationsProcessor
+    #   autoload :Configuration
+    # end
 
-    autoload(:Relation, "jsonapi/client/relation")
-    autoload(:SpawnMethods, "jsonapi/client/relation/spawn_methods")
-    autoload(:QueryMethods, "jsonapi/client/relation/query_methods")
-    autoload(:FinderMethods, "jsonapi/client/relation/finder_methods")
+    autoload :Connection
+    autoload :Middleware
+    autoload :Querying
+    autoload :Attributes
+    autoload :Resource
+    autoload :Serializer
+    autoload :Formatter
+    autoload :Relation
 
-    # autoload(:Operation, "jsonapi/client/operation")
-    autoload(:OperationResult, "jsonapi/client/operation_result")
-    autoload(:OperationResults, "jsonapi/client/operation_results")
-    autoload(:OperationsProcessor, "jsonapi/client/operations_processor")
+    autoload_under "relation" do
+      autoload :SpawnMethods
+      autoload :QueryMethods
+      autoload :FinderMethods
+    end
+
+    autoload :Operation
+    autoload :IndexOperation, "jsonapi/client/operation"
+    autoload :ShowOperation, "jsonapi/client/operation"
+
+    autoload :OperationResult
+    autoload :OperationResults
+    autoload :OperationsProcessor
+
+    autoload :RecordNotFound, "jsonapi/client/errors"
   end
 end
