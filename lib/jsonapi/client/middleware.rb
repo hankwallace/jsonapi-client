@@ -3,7 +3,7 @@ module JSONAPI
     module Middleware
       extend ActiveSupport::Autoload
 
-      autoload :EncodeJsonApi, "jsonapi/client/middleware/request/encode_json_api"
+      autoload :EncodeJsonApi
     end
   end
 end
