@@ -50,11 +50,6 @@ module JSONAPI
       self.readonly_attributes = [:id, :type, :links, :meta, :relationships]
 
       class << self
-        extend Forwardable
-
-        # def_delegators :request, :where, :order, :includes, :select, :page, :per, :all, :find, :first
-        # def_delegators :request, :includes, :page, :per, :find, :first
-
         def resource_name
           name.demodulize.underscore
         end

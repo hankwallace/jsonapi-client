@@ -22,7 +22,7 @@ module JSONAPI
     autoload(:Serializer, "jsonapi/client/serializer")
 
     autoload(:Relation, "jsonapi/client/relation")
-    autoload(:SpawnMethods, "jsonapi/client/spawn_methods")
+    autoload(:SpawnMethods, "jsonapi/client/relation/spawn_methods")
     autoload(:QueryMethods, "jsonapi/client/relation/query_methods")
     autoload(:FinderMethods, "jsonapi/client/relation/finder_methods")
 
