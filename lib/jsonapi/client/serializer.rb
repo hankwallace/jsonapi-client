@@ -28,7 +28,6 @@ module JSONAPI
       end
 
       def deserialize(json)
-        # TODO: Use Response (was ResultSet)
 
         Array.wrap(json.fetch("data", [])).map do |data|
           # resource_class.new.tap do |resource|

@@ -31,7 +31,8 @@ module JSONAPI
 
       def process(method, path, params)
         response = connection.send(method, route_formatter.format(path), route_formatter.format_params(params))
-        serializer.deserialize(response.body || {})
+        resources = serializer.deserialize(response.body || {})
+        JSONAPI::Client::ResourcesOperationResult.new(response.status, resources)
       end
     end
 

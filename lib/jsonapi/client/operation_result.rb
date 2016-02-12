@@ -1,10 +1,7 @@
 module JSONAPI
   module Client
     class OperationResult
-      attr_accessor :code
-      attr_accessor :meta
-      attr_accessor :links
-      attr_accessor :options
+      attr_accessor :code, :options, :meta, :links
 
       def initialize(code, options = {})
         @code = code
@@ -23,44 +20,42 @@ module JSONAPI
       end
     end
 
-    class ResourceOperationResult < OperationResult
-      attr_accessor :resource
-
-      def initialize(code, resource, options = {})
-        @resource = resource
-        super(code, options)
-      end
-    end
+    # class ResourceOperationResult < OperationResult
+    #   attr_accessor :resource
+    #
+    #   def initialize(code, resource, options = {})
+    #     @resource = resource
+    #     super(code, options)
+    #   end
+    # end
 
     class ResourcesOperationResult < OperationResult
-      attr_accessor :resources, :pagination_params, :record_count
+      attr_accessor :resources
 
       def initialize(code, resources, options = {})
         @resources = resources
-        @pagination_params = options.fetch(:pagination_params, {})
-        @record_count = options[:record_count]
         super(code, options)
       end
     end
 
-    class RelatedResourcesOperationResult < ResourcesOperationResult
-      attr_accessor :source_resource, :_type
+    # class RelatedResourcesOperationResult < ResourcesOperationResult
+    #   attr_accessor :source_resource, :_type
+    #
+    #   def initialize(code, source_resource, type, resources, options = {})
+    #     @source_resource = source_resource
+    #     @_type = type
+    #     super(code, resources, options)
+    #   end
+    # end
 
-      def initialize(code, source_resource, type, resources, options = {})
-        @source_resource = source_resource
-        @_type = type
-        super(code, resources, options)
-      end
-    end
-
-    class LinksObjectOperationResult < OperationResult
-      attr_accessor :parent_resource, :relationship
-
-      def initialize(code, parent_resource, relationship, options = {})
-        @parent_resource = parent_resource
-        @relationship = relationship
-        super(code, options)
-      end
-    end
+    # class LinksObjectOperationResult < OperationResult
+    #   attr_accessor :parent_resource, :relationship
+    #
+    #   def initialize(code, parent_resource, relationship, options = {})
+    #     @parent_resource = parent_resource
+    #     @relationship = relationship
+    #     super(code, options)
+    #   end
+    # end
   end
 end

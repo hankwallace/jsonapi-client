@@ -36,6 +36,9 @@ module JSONAPI
     autoload :ShowOperation, "jsonapi/client/operation"
 
     autoload :OperationResult
+    autoload :ErrorsOperationResult, "jsonapi/client/operation_result"
+    autoload :ResourcesOperationResult, "jsonapi/client/operation_result"
+
     autoload :OperationResults
     autoload :OperationsProcessor
 

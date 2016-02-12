@@ -88,7 +88,6 @@ describe JSONAPI::Client::Resource, "query formatting" do
 
         results = subject.all
 
-        expect(results).to be_a(Array)
         expect(results.length).to eq(2)
         expect(results[0].approved_on).to eq(approved_on)
         expect(results[1].approved_on).to eq(approved_on)
@@ -130,7 +129,6 @@ describe JSONAPI::Client::Resource, "query formatting" do
 
         results = subject.all
 
-        expect(results).to be_a(Array)
         expect(results.length).to eq(2)
         expect(results[0].approved_on).to eq(approved_on)
         expect(results[1].approved_on).to eq(approved_on)
@@ -172,7 +170,6 @@ describe JSONAPI::Client::Resource, "query formatting" do
 
         results = subject.all
 
-        expect(results).to be_a(Array)
         expect(results.length).to eq(2)
         expect(results[0].approved_on).to eq(approved_on)
         expect(results[1].approved_on).to eq(approved_on)

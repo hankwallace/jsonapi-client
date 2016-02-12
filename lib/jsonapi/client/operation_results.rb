@@ -1,25 +1,22 @@
 module JSONAPI
   module Client
-    class OperationResults < Array
-      # TODO: Is it bad practice to inherit from Array? Some articles
-      # suggest composition using Enumerable instead.
-      # include Enumerable
+    class OperationResults
+      include Enumerable
 
-      # attr_accessor :results
-      # attr_accessor :meta
-      # attr_accessor :links
+      attr_accessor :resources, :meta, :links
 
-      # def initialize
-      #   @results = []
-      #   @has_errors = false
-      #   @meta = {}
-      #   @links = {}
-      # end
+      def initialize
+        @resources = []
+        @has_errors = false
+        @meta = {}
+        @links = {}
+      end
 
-      # def add_result(result)
-      #   @has_errors = true if result.is_a?(JSONAPI::Client::ErrorsOperationResult)
-      #   @results.push(result)
-      # end
+      def add_result(result)
+        # @has_errors = true if result.is_a?(JSONAPI::Client::ErrorsOperationResult)
+        # @results.push(result)
+        @resources.concat(result.resources) if result.respond_to?(:resources)
+      end
 
       # def has_errors?
       #   @has_errors
@@ -37,6 +34,46 @@ module JSONAPI
       #   errors
       # end
 
+
+      def length
+        resources.length
+      end
+      alias :size :length
+
+      def each
+        if block_given?
+          resources.each { |row| yield row }
+        else
+          resources.to_enum { resources.size }
+        end
+      end
+
+      alias :map! :map
+      alias :collect! :map
+
+      def empty?
+        resources.empty?
+      end
+
+      def [](idx)
+        resources[idx]
+      end
+
+      def first
+        resources.first
+      end
+
+      def last
+        resources.last
+      end
+
+      # def concat(other_ary)
+      #   resources.concat(other_ary)
+      # end
+
+      # def initialize_copy(other)
+      #   @resources = resources.dup
+      # end
     end
   end
 end

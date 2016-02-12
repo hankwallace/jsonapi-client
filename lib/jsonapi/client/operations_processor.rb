@@ -17,10 +17,7 @@ module JSONAPI
         JSONAPI::Client::OperationResults.new.tap do |results|
           operations.each do |operation|
             result = process_operation(operation)
-            # results.add_result(result)
-            # results.push(result)
-            # Array.wrap(result).each { |r| results.push(r) }
-            results.concat(Array.wrap(result))
+            results.add_result(result)
           end
         end
       end
