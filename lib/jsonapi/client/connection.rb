@@ -1,9 +1,7 @@
 module JSONAPI
   module Client
     class Connection
-      extend Forwardable
-
-      def_delegators :faraday, :get, :post
+      delegate :get, :post, to: :faraday
 
       attr_reader :faraday
 

@@ -1,7 +1,6 @@
 module JSONAPI
   module Client
     module Attributes
-
       def attributes
         @attributes
       end
@@ -46,7 +45,6 @@ module JSONAPI
       def set_attribute(name, value)
         attributes[name] = value
       end
-
     end
   end
 end

@@ -4,20 +4,8 @@ module JSONAPI
   module Client
     module QueryMethods
 
-      # http://api.rubyonrails.org/classes/ActiveRecord/QueryMethods.html
-
       VALID_DIRECTIONS = [:asc, :desc, :ASC, :DESC,
         "asc", "desc", "ASC", "DESC"]
-
-      # class WhereChain
-      #   def initialize(scope)
-      #     @scope = scope
-      #   end
-      #
-      #   def not(opts, *rest)
-      #
-      #   end
-      # end
 
       Relation::SINGLE_VALUE_METHODS.each do |name|
         class_eval <<-CODE, __FILE__, __LINE__ + 1
@@ -42,10 +30,6 @@ module JSONAPI
         end                                 # end
         CODE
       end
-
-      # TODO: instead of calling the arg "conditions", it should probably be called "values"
-      # because they are more like attributes. They only become "conditions" if a query
-      # method is called. ex: User.where(last_name: 'Snow').create(email: 'jon@example.com')
 
       def includes(*args)
         check_if_method_has_arguments!(:includes, args)

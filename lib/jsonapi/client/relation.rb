@@ -8,10 +8,9 @@ module JSONAPI
       SINGLE_VALUE_METHODS = [:limit, :offset]
       MULTI_VALUE_METHODS  = [:includes, :select, :order, :where]
 
-      extend Forwardable
       include SpawnMethods, FinderMethods, QueryMethods
 
-      def_delegators :klass, :primary_key
+      delegate :primary_key, to: :klass
 
       # http://api.rubyonrails.org/classes/ActiveRecord/Relation.html
 

@@ -4,7 +4,6 @@ module JSONAPI
       def spawn # :nodoc:
         clone
       end
-
     end
   end
 end

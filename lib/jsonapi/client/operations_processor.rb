@@ -1,12 +1,6 @@
 module JSONAPI
   module Client
     class OperationsProcessor
-      # extend Forwardable
-      #
-      # def_delegators :resource_class, :route_formatter, :connection, :serializer
-
-      # TODO: Use "Result" or "Response"???
-
       class << self
         def operations_processor_for(operations_processor)
           "#{operations_processor.to_s.camelize}OperationsProcessor".safe_constantize

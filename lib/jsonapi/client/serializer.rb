@@ -1,10 +1,6 @@
 module JSONAPI
   module Client
     class Serializer
-      # extend Forwardable
-
-      # def_delegators :resource_class,
-
       attr_reader :resource_class, :key_formatter
 
       def initialize(resource_class, options = {})

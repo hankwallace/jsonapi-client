@@ -8,8 +8,6 @@ module JSONAPI
       protected
 
       def find_with_ids(*ids)
-        # raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
-
         expects_array = ids.first.kind_of?(Array)
         return ids.first if expects_array && ids.first.empty?
 

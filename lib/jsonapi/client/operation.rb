@@ -1,9 +1,7 @@
 module JSONAPI
   module Client
     class Operation
-      extend Forwardable
-
-      def_delegators :resource_class, :primary_key, :connection, :serializer, :route_formatter
+      delegate :primary_key, :connection, :serializer, :route_formatter, to: :resource_class
 
       attr_reader :resource_class, :options
 
