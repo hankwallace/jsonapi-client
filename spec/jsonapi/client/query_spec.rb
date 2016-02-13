@@ -106,7 +106,7 @@ describe JSONAPI::Client::Resource, "query" do
     end
   end
 
-  describe "#include" do
+  describe "#includes" do
     context "when finding a single resource" do
       let(:response_body) do
         {

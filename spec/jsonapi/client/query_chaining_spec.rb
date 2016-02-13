@@ -21,7 +21,7 @@ describe JSONAPI::Client::Resource, "query chaining" do
       }.to_json
     end
 
-    describe "#include #select #find" do
+    describe "#includes #select #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
           with(query: { include: "author", fields: { "articles" => "title" } }).
@@ -41,7 +41,7 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
-    describe "#select #include #find" do
+    describe "#select #includes #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
           with(query: { include: "author", fields: { "articles" => "title" } }).
@@ -61,7 +61,7 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
-    describe "#where #include #find" do
+    describe "#where #includes #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").
           with(query: { include: "author", filter: { "category" => "Programming" } }).
