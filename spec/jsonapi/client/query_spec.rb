@@ -106,6 +106,497 @@ describe JSONAPI::Client::Resource, "query" do
     end
   end
 
+  describe "#find_by" do
+    let(:response_body) do
+      {
+        data: {
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI",
+            category: "Programming"
+          }
+        }
+      }.to_json
+    end
+
+    context "when filtering by a single value" do
+      before(:each) do
+        stub_request(:get, url).
+          with(query: { filter: { "category" => "Programming" }, page: { "limit" => 1 } }).
+          to_return(headers: headers, body: response_body)
+      end
+
+      context "with a string" do
+        it "sends the right request" do
+          subject.find_by(category: "Programming")
+        end
+      end
+
+      context "with a symbol" do
+        it "sends the right request" do
+          subject.find_by(category: :Programming)
+        end
+      end
+    end
+
+    context "when filtering by multiple values" do
+      before(:each) do
+        stub_request(:get, url).
+          with(query: { filter: { "category" => "Programming,Management" }, page: { "limit" => 1 } }).
+          to_return(headers: headers, body: response_body)
+      end
+
+      context "with strings" do
+        it "sends the right request" do
+          subject.find_by(category: %w(Programming Management))
+        end
+      end
+
+      context "with symbols" do
+        it "sends the right request" do
+          subject.find_by(category: [:Programming, :Management])
+        end
+      end
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      before(:each) do
+        stub_request(:get, url).
+          with(query: { filter: { "category" => "Programming" }, page: { "limit" => 1 } }).
+          to_return(headers: headers, body: response_body)
+      end
+
+      it "returns nil" do
+        expect(subject.find_by(category: :Programming)).to be_nil
+      end
+    end
+  end
+
+  describe "#find_by!" do
+    let(:response_body) do
+      {
+        data: {
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI",
+            category: "Programming"
+          }
+        }
+      }.to_json
+    end
+
+    context "when filtering by a single value" do
+      before(:each) do
+        stub_request(:get, url).
+          with(query: { filter: { "category" => "Programming" }, page: { "limit" => 1 } }).
+          to_return(headers: headers, body: response_body)
+      end
+
+      context "with a string" do
+        it "sends the right request" do
+          subject.find_by!(category: "Programming")
+        end
+      end
+
+      context "with a symbol" do
+        it "sends the right request" do
+          subject.find_by!(category: :Programming)
+        end
+      end
+
+      context "when resource is not found" do
+        let(:response_body) do
+          {}.to_json
+        end
+
+        it "raises an exception" do
+          stub_request(:get, url).
+            with(query: { filter: { "category" => "Management" }, page: { "limit" => 1 } }).
+            to_return(headers: headers, body: response_body)
+
+          expect do
+            subject.find_by!(category: :Management)
+          end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+        end
+      end
+    end
+  end
+
+  describe "#take" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+    let(:limit) { 1 }
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => limit } }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    context "when no limit is specified" do
+      let(:response_body) do
+        {
+          data: {
+            type: "articles",
+            id: "1",
+            attributes: {
+              title: "Beginner JSONAPI"
+            }
+          }
+        }.to_json
+      end
+
+      it "sends the right request" do
+        subject.take
+      end
+    end
+
+    context "when a limit is specified" do
+      let(:limit) { 2 }
+
+      it "sends the right request" do
+        subject.take(2)
+      end
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "returns nil" do
+        expect(subject.take).to be_nil
+      end
+    end
+  end
+
+  describe "#take!" do
+    let(:response_body) do
+      {
+        data: {
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }
+      }.to_json
+    end
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => 1 } }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    it "sends the right request" do
+      subject.take!
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "raises an exception" do
+        expect do
+          subject.take!
+        end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+      end
+    end
+  end
+
+  describe "#first" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+    let(:limit) { 1 }
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => limit }, sort: "id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    context "when no limit is specified" do
+      it "sends the right request" do
+        subject.first
+      end
+    end
+
+    context "when a limit is specified" do
+      let(:limit) { 2 }
+
+      it "sends the right request" do
+        subject.first(limit)
+      end
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "returns nil" do
+        expect(subject.first).to be_nil
+      end
+    end
+  end
+
+  describe "#first!" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => 1 }, sort: "id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    it "sends the right request" do
+      subject.first!
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "raises an exception" do
+        expect do
+          subject.first!
+        end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+      end
+    end
+  end
+
+  describe "#last" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+    let(:limit) { 1 }
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => limit }, sort: "-id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    context "when no limit is specified" do
+      it "sends the right request" do
+        subject.last
+      end
+    end
+
+    context "when a limit is specified" do
+      let(:limit) { 2 }
+
+      it "sends the right request" do
+        subject.last(limit)
+      end
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "returns nil" do
+        expect(subject.last).to be_nil
+      end
+    end
+  end
+
+  describe "#last!" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => 1 }, sort: "-id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    it "sends the right request" do
+      subject.last!
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "raises an exception" do
+        expect do
+          subject.last!
+        end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+      end
+    end
+  end
+
+  describe "#second" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+    let(:limit) { 1 }
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => limit, "offset" => 1 }, sort: "id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    it "sends the right request" do
+      subject.second
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "returns nil" do
+        expect(subject.second).to be_nil
+      end
+    end
+
+  end
+
+  describe "#second!" do
+    let(:response_body) do
+      {
+        data: [{
+          type: "articles",
+          id: "1",
+          attributes: {
+            title: "Beginner JSONAPI"
+          }
+        }, {
+          type: "articles",
+          id: "2",
+          attributes: {
+            title: "Advanced JSONAPI"
+          }
+        }]
+      }.to_json
+    end
+
+    before(:each) do
+      stub_request(:get, url).
+        with(query: { page: { "limit" => 1, "offset" => 1 }, sort: "id" }).
+        to_return(headers: headers, body: response_body)
+    end
+
+    it "sends the right request" do
+      subject.second!
+    end
+
+    context "when resource is not found" do
+      let(:response_body) do
+        {}.to_json
+      end
+
+      it "raises an exception" do
+        expect do
+          subject.second!
+        end.to raise_exception(JSONAPI::Client::RecordNotFound, /Couldn't find Article/)
+      end
+    end
+  end
+
   describe "#includes" do
     context "when finding a single resource" do
       let(:response_body) do
@@ -489,7 +980,7 @@ describe JSONAPI::Client::Resource, "query" do
 
       context "with an array of strings" do
         it "sends the right request" do
-          subject.where(category: ["Programming", "Management"]).all
+          subject.where(category: %w(Programming Management)).all
         end
       end
 

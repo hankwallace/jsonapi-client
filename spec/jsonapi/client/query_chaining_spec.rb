@@ -31,6 +31,76 @@ describe JSONAPI::Client::Resource, "query chaining" do
       end
     end
 
+    describe "#order #first" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { page: { limit: 1 }, sort: "title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.order(:title).first
+      end
+    end
+
+    describe "#order #last" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { page: { limit: 1 }, sort: "-title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.order(:title).last
+      end
+
+      context "with multiple order args" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { page: { limit: 1 }, sort: "-category,title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(category: :asc, title: :desc).last
+        end
+      end
+
+      context "with a limit" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { page: { limit: 3 }, sort: "-title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(:title).last(3)
+        end
+      end
+    end
+
+    describe "#order #order #last" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { page: { limit: 1 }, sort: "-category,-title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.order(:category).order(:title).last
+      end
+
+      context "with a limit" do
+        it "sends the right request" do
+          stub_request(:get, url).
+            with(query: { page: { limit: 3 }, sort: "-category,-title" }).
+            to_return(headers: headers, body: response_body)
+
+          subject.order(:category).order(:title).last(3)
+        end
+      end
+    end
+
+    describe "#order #take" do
+      it "sends the right request" do
+        stub_request(:get, url).
+          with(query: { page: { limit: 1 }, sort: "title" }).
+          to_return(headers: headers, body: response_body)
+
+        subject.order(:title).take
+      end
+    end
+
     describe "#select #find" do
       it "sends the right request" do
         stub_request(:get, "#{url}/1").

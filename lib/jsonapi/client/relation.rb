@@ -1,7 +1,3 @@
-# require "jsonapi/client/finder_methods"
-# require "jsonapi/client/query_methods"
-# require "jsonapi/client/calculations"
-
 module JSONAPI
   module Client
     class Relation

@@ -4,8 +4,9 @@ module JSONAPI
   module Client
     module QueryMethods
 
-      VALID_DIRECTIONS = [:asc, :desc, :ASC, :DESC,
-        "asc", "desc", "ASC", "DESC"]
+      ASCENDING_DIRECTIONS = [:asc, :ASC, "asc", "ASC"]
+      DESCENDING_DIRECTIONS = [:desc, :DESC, "desc", "DESC"]
+      VALID_DIRECTIONS = ASCENDING_DIRECTIONS + DESCENDING_DIRECTIONS
 
       Relation::SINGLE_VALUE_METHODS.each do |name|
         class_eval <<-CODE, __FILE__, __LINE__ + 1
@@ -73,6 +74,21 @@ module JSONAPI
         self
       end
 
+      def reverse_order
+        spawn.reverse_order!
+      end
+
+      def reverse_order! # :nodoc:
+        orders = order_values.uniq
+        orders.reject(&:blank?)
+        if orders.empty?
+          self.order_values = [{ primary_key => :desc }]
+        else
+          self.order_values = reversed_order_values(orders)
+        end
+        self
+      end
+
       def select(*args)
         spawn.select!(*args)
       end
@@ -101,6 +117,26 @@ module JSONAPI
       def check_if_method_has_arguments!(method_name, args)
         if args.blank?
           raise ArgumentError, "The method .#{method_name}() must contain arguments."
+        end
+      end
+
+      def reversed_direction(arg)
+        if ASCENDING_DIRECTIONS.include?(arg)
+          :desc
+        else
+          :asc
+        end
+      end
+
+      def reversed_order_values(values)
+        values.map do |value|
+          if value.is_a?(Hash)
+            value.map do |k, v|
+              { k => reversed_direction(v) }
+            end.inject({}, &:merge)
+          else
+            { value => :desc}
+          end
         end
       end
 
