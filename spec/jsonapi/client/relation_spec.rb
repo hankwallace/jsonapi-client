@@ -23,20 +23,15 @@ describe JSONAPI::Client::Relation do
     end
 
     it "caches the result" do
+      relation = subject.where(category: "Programming")
+
       stub = stub_request(:get, url).
         with(query: { filter: { "category" => "Programming" } }).
         to_return(headers: headers, body: response_body)
-
-      relation = subject.where(category: "Programming")
       resources = relation.to_a
 
       remove_request_stub(stub)
       resources = relation.to_a
     end
-  end
-
-  describe "chaining" do
-    # TODO: describe how relations in a chain are different
-
   end
 end
