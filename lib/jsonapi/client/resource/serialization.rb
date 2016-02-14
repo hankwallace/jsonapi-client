@@ -31,6 +31,7 @@ module JSONAPI
         # end
 
         self.attributes = deserialize_attributes(json, options)
+        self
       end
 
       private

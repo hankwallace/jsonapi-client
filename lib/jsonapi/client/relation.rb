@@ -85,7 +85,39 @@ module JSONAPI
       #
       # end
 
-      def all
+      def to_a
+        load
+        @result
+      end
+      alias all to_a
+
+      def load
+        exec_query unless loaded?
+        self
+      end
+
+      def reload
+        reset
+        load
+      end
+
+      def loaded?
+        @loaded
+      end
+
+      def reset
+        @loaded = nil
+        @result = nil
+        self
+      end
+
+      protected
+
+      def operations_processor
+        JSONAPI::Client.configuration.operations_processor.new
+      end
+
+      def exec_query
         operations = [
           JSONAPI::Client::IndexOperation.new(klass, {
             includes: includes_values,
@@ -96,16 +128,11 @@ module JSONAPI
             where: where_values
           })
         ]
-        operations_processor.process(operations)
+        @result = operations_processor.process(operations)
+
+        @loaded = true
+        @result
       end
-      alias to_a all
-
-      protected
-
-      def operations_processor
-        JSONAPI::Client.configuration.operations_processor.new
-      end
-
     end
   end
 end
