@@ -18,8 +18,6 @@ module JSONAPI
     # end
 
     autoload :Connection
-    autoload :Querying
-    autoload :Attributes
     autoload :Resource
     autoload :Serializer
     autoload :Formatter
@@ -29,6 +27,12 @@ module JSONAPI
       autoload :SpawnMethods
       autoload :QueryMethods
       autoload :FinderMethods
+    end
+
+    autoload_under "resource" do
+      autoload :Querying
+      autoload :Attributes
+      autoload :Serialization
     end
 
     autoload :Operation

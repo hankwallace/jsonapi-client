@@ -13,6 +13,8 @@ module JSONAPI
 
       # include Helpers::DynamicAttributes
       include Attributes
+      include Serialization
+
       # include Helpers::Dirty
 
       # include Associations::BelongsTo
