@@ -26,6 +26,10 @@ describe JSONAPI::Client::Resource, "query results" do
       stub_request(:get, "#{url}/1").
         to_return(headers: headers, body: response_body)
     end
+
+    it "is a resource" do
+      expect(results).is_a?(Article)
+    end
   end
 
   context "when finding multiple resources" do
@@ -65,5 +69,14 @@ describe JSONAPI::Client::Resource, "query results" do
       expect(results.first.id).to eq("1")
       expect(results.last.id).to eq("2")
     end
+
+    it "has no errors" do
+      expect(results.status).to be(200)
+      expect(results.has_errors?).to be(false)
+    end
+  end
+
+  context "when errors occur" do
+
   end
 end

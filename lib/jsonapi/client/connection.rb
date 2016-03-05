@@ -10,8 +10,8 @@ module JSONAPI
         @faraday = Faraday.new(url) do |conn|
           conn.request :json
           conn.use Middleware::EncodeJsonApi
-          # TODO: Middleware::Status?
-          conn.use FaradayMiddleware::ParseJson # or Middleware::ParseJsoAapi or DecodeJsonApi?
+          conn.use Middleware::Status
+          conn.use FaradayMiddleware::ParseJson
           conn.adapter Faraday.default_adapter
         end
         yield(self) if block_given?

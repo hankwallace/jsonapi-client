@@ -84,7 +84,9 @@ module JSONAPI
         ]
         resource = operations_processor.process(operations).first
 
-        raise_record_not_found_exception!(id, 0, 1) unless resource
+        unless resource
+          raise RecordNotFound, "Couldn't find #{@klass.name} with '#{primary_key}'=#{id}"
+        end
 
         resource
       end
@@ -107,7 +109,9 @@ module JSONAPI
         if result.size == expected_size
           result
         else
-          raise_record_not_found_exception!(ids, result.size, expected_size)
+          error = "Couldn't find all #{@klass.name.pluralize} with '#{primary_key}': "
+          error << "(#{ids.join(", ")}) (found #{result.size} results, but was looking for #{expected_size})"
+          raise RecordNotFound, error
         end
       end
 
@@ -143,25 +147,6 @@ module JSONAPI
         relation = reverse_order
         relation = relation.offset(offset) unless offset.zero?
         relation.limit(limit).to_a
-      end
-
-      # This method is called whenever no records are found with either a single
-      # id or multiple ids and raises a ActiveRecord::RecordNotFound exception.
-      #
-      # The error message is different depending on whether a single id or
-      # multiple ids are provided. If multiple ids are provided, then the number
-      # of results obtained should be provided in the +result_size+ argument and
-      # the expected number of results should be provided in the +expected_size+
-      # argument.
-      def raise_record_not_found_exception!(ids, result_size, expected_size) #:nodoc:
-        if Array(ids).size == 1
-          error = "Couldn't find #{@klass.name} with '#{primary_key}'=#{ids}"
-        else
-          error = "Couldn't find all #{@klass.name.pluralize} with '#{primary_key}': "
-          error << "(#{ids.join(", ")}) (found #{result_size} results, but was looking for #{expected_size})"
-        end
-
-        raise RecordNotFound, error
       end
 
       private

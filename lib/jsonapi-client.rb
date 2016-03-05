@@ -6,16 +6,11 @@ require "active_model"
 require "active_support/all"
 require "jsonapi/client/version"
 require "jsonapi/client/configuration"
+require "jsonapi/client/errors"
 
 module JSONAPI
   module Client
     extend ActiveSupport::Autoload
-
-    # eager_autoload do
-    #   autoload :Formatter
-    #   autoload :OperationsProcessor
-    #   autoload :Configuration
-    # end
 
     autoload :Connection
     autoload :Resource
@@ -46,12 +41,11 @@ module JSONAPI
     autoload :OperationResults
     autoload :OperationsProcessor
 
-    autoload :RecordNotFound, "jsonapi/client/errors"
-
     module Middleware
       extend ActiveSupport::Autoload
 
       autoload :EncodeJsonApi
+      autoload :Status
     end
   end
 end

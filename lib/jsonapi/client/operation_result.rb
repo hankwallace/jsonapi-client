@@ -1,10 +1,10 @@
 module JSONAPI
   module Client
     class OperationResult
-      attr_accessor :code, :options, :meta, :links
+      attr_accessor :status, :options, :meta, :links
 
-      def initialize(code, options = {})
-        @code = code
+      def initialize(status, options = {})
+        @status = status
         @options = options
         @meta = options.fetch(:meta, {})
         @links = options.fetch(:links, {})
@@ -14,9 +14,9 @@ module JSONAPI
     class ErrorsOperationResult < OperationResult
       attr_accessor :errors
 
-      def initialize(code, errors, options = {})
+      def initialize(status, errors, options = {})
+        super(status, options)
         @errors = errors
-        super(code, options)
       end
     end
 
@@ -32,9 +32,9 @@ module JSONAPI
     class ResourcesOperationResult < OperationResult
       attr_accessor :resources
 
-      def initialize(code, resources, options = {})
+      def initialize(status, resources, options = {})
+        super(status, options)
         @resources = resources
-        super(code, options)
       end
     end
 
